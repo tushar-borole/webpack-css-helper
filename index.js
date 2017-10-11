@@ -9,6 +9,9 @@ function CssHelperPlugin(options) {
 }
 
 CssHelperPlugin.prototype.apply = function(compiler) {
+    var self = this;
+
+    self.test()
     compiler.plugin("compile", function(params) {
         console.log(params);
     });
@@ -43,5 +46,10 @@ CssHelperPlugin.prototype.apply = function(compiler) {
 
     });
 };
+
+CssHelperPlugin.prototype.generateMarginPadding = function (templateFunction) {
+console.log('test')
+
+}
 
 module.exports = CssHelperPlugin;
