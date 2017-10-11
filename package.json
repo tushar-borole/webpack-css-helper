@@ -24,5 +24,9 @@
   "bugs": {
     "url": "https://github.com/tushariscoolster/webpack-css-helper/issues"
   },
-  "homepage": "https://github.com/tushariscoolster/webpack-css-helper#readme"
+  "homepage": "https://github.com/tushariscoolster/webpack-css-helper#readme",
+  "dependencies": {
+    "jsoncss": "^1.0.2",
+    "lodash": "^4.17.4"
+  }
 }
