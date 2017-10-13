@@ -11,7 +11,7 @@ function CssHelperPlugin(options) {
 CssHelperPlugin.prototype.apply = function(compiler) {
     var self = this;
 
-    self.test()
+    self.generateMargin()
     compiler.plugin("compile", function(params) {
         console.log(params);
     });
@@ -27,11 +27,7 @@ CssHelperPlugin.prototype.apply = function(compiler) {
     compiler.plugin("emit", function(compilation, callback) {
         console.log("The compilation is going to emit files...");
 
-        jsoncss.convert({
-            "body": {
-                "color":"red"
-            }
-        }, '', function(err, result) {
+        jsoncss.convert(self.generateMargin(), '', function(err, result) {
             if (err) {
                 return console.log(err);
             }
@@ -47,9 +43,37 @@ CssHelperPlugin.prototype.apply = function(compiler) {
     });
 };
 
-CssHelperPlugin.prototype.generateMarginPadding = function (templateFunction) {
-console.log('test')
+CssHelperPlugin.prototype.generateMargin = function (object) {
+    var self = this;
+    var margin={}
+    switch(object.style) {
+        case 'margin-top':
+            for(var i=object.start;i<object.end;i += object.distance){
+                _.setWith(margin, '['+'.mt-'+i+'][margin-top]', i+'px', Object);
+            }
+            break;
+        case 'margin-right':
+            for(var i=object.start;i<object.end;i += object.distance){
+                _.setWith(margin, '['+'.mr-'+i+'][margin-right]', i+'px', Object);
+            }
+            break;
+    }
+
+
+    self.generateCssFile(margin)
 
 }
+
+
+CssHelperPlugin.prototype.generatePadding = function () {
+
+
+}
+
+CssHelperPlugin.prototype.generateCssFile = function (object) {
+
+
+}
+
 
 module.exports = CssHelperPlugin;
