@@ -1,4 +1,4 @@
-#webpack-css-helper
+webpack-css-helper
 ===================
 
 Simple webpack helper to create the helper css for you project
