@@ -1,6 +1,6 @@
 {
   "name": "webpack-css-helper",
-  "version": "1.0.0",
+  "version": "0.0.2",
   "description": "Css helper webpack for your application",
   "main": "index.js",
   "directories": {
