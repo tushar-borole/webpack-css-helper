@@ -2,16 +2,19 @@
 var jsoncss = require("jsoncss");
 var fs= require('fs');
 var _ = require('lodash');
+var jsonfile = require('jsonfile')
 function CssHelperPlugin(options) {
     // Configure your plugin with options...
     this.options = _.extend({config:'css.config.json'}, options);
+    this.options.schema=jsonfile.readFileSync('./css.config.json')
+    console.log(this.options.schema)
 
 }
 
 CssHelperPlugin.prototype.apply = function(compiler) {
     var self = this;
 
-    self.generateMargin()
+
     compiler.plugin("compile", function(params) {
         console.log(params);
     });
@@ -23,55 +26,51 @@ CssHelperPlugin.prototype.apply = function(compiler) {
             console.log("The compilation is starting to optimize files...");
         });
     });
-
     compiler.plugin("emit", function(compilation, callback) {
+        console.log(self.options.schema)
         console.log("The compilation is going to emit files...");
 
-        jsoncss.convert(self.generateMargin(), '', function(err, result) {
-            if (err) {
-                return console.log(err);
-            }
-            fs.writeFile('csshelper.css', result, function(err){
-                if (err) {
-                    return console.log(err);
-                }
-                callback();
-            });
+          var style= self.generateStyle(self.options.schema)
+        self.generateCssFile(style,callback)
 
-        });
+
+
 
     });
 };
 
-CssHelperPlugin.prototype.generateMargin = function (object) {
+CssHelperPlugin.prototype.generateStyle = function (data) {
     var self = this;
-    var margin={}
-    switch(object.style) {
-        case 'margin-top':
-            for(var i=object.start;i<object.end;i += object.distance){
-                _.setWith(margin, '['+'.mt-'+i+'][margin-top]', i+'px', Object);
-            }
-            break;
-        case 'margin-right':
-            for(var i=object.start;i<object.end;i += object.distance){
-                _.setWith(margin, '['+'.mr-'+i+'][margin-right]', i+'px', Object);
-            }
-            break;
-    }
+    var css={}
+    _.forEach(data, function(object, key) {
+        console.log('innn')
+        for (var i = object.start; i < object.end; i += object.distance) {
+            console.log(object.className)
+            css['.'+object.className + '-' + i]={}
+            css['.'+object.className + '-' + i][object.style]=i + 'px'+(object.important===true?'!important':'')
+        }
+    })
+    console.log(css)
 
-
-    self.generateCssFile(margin)
-
-}
-
-
-CssHelperPlugin.prototype.generatePadding = function () {
+    return css;
 
 
 }
 
-CssHelperPlugin.prototype.generateCssFile = function (object) {
 
+CssHelperPlugin.prototype.generateCssFile = function (style,callback) {
+    jsoncss.convert(style, '', function(err, result) {
+        if (err) {
+            return console.log(err);
+        }
+        fs.writeFile('csshelper.css', result, function(err){
+            if (err) {
+                return console.log(err);
+            }
+            callback();
+        });
+
+    });
 
 }
 
